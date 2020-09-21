@@ -1,0 +1,28 @@
+import (
+	"fmt"
+	"okey-dokey/ok_action"
+	"okey-dokey/bad"
+)
+
+func defaultGreaterThanOrEqualFormat(definition *GreaterThanOrEqual, value *{{.PrimitiveKeyword}}) string {
+	return fmt.Sprintf("must be greater than or equal to %d", definition.Value)
+}
+
+type GreaterThanOrEqual struct {
+	Format func(definition *GreaterThanOrEqual, value *{{.PrimitiveKeyword}}) string
+	Value  {{.PrimitiveKeyword}}
+}
+
+func (m *GreaterThanOrEqual) Validate(value *{{.PrimitiveKeyword}}, violationReceiver bad.MessageReceiver) ok_action.Enum {
+	formatter := defaultGreaterThanOrEqualFormat
+	if m.Format != nil {
+		formatter = m.Format
+	}
+	if value == nil {
+		return ok_action.Continue
+	}
+	if *value < m.Value {
+		violationReceiver.ReceiveMessage(formatter(m, value))
+	}
+	return ok_action.Continue
+}

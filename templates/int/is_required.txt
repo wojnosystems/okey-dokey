@@ -1,0 +1,23 @@
+import (
+	"okey-dokey/ok_action"
+	"okey-dokey/bad"
+)
+
+func defaultIsRequiredFormat(definition *IsRequired, value *{{.PrimitiveKeyword}})string {
+	return "is required"
+}
+
+type IsRequired struct {
+	Format func(definition *IsRequired, value *{{.PrimitiveKeyword}})string
+}
+
+func (m *IsRequired) Validate(value *{{.PrimitiveKeyword}}, violationReceiver bad.MessageReceiver) ok_action.Enum {
+	formatter := defaultIsRequiredFormat
+	if m.Format != nil {
+		formatter = m.Format
+	}
+	if value == nil {
+		violationReceiver.ReceiveMessage(formatter(m,value))
+	}
+	return ok_action.Continue
+}

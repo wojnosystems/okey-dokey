@@ -1,0 +1,3 @@
+func addrOf( value {{.PrimitiveKeyword}} ) *{{.PrimitiveKeyword}} {
+    return &value
+}

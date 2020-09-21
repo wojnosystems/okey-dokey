@@ -1,0 +1,8 @@
+import (
+	"okey-dokey/ok_action"
+	"okey-dokey/bad"
+)
+
+type Definer interface {
+	Validate(value *{{.PrimitiveKeyword}}, violationReceiver bad.MessageReceiver) ok_action.Enum
+}

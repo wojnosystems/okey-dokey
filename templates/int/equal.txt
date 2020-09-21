@@ -1,0 +1,28 @@
+import (
+	"fmt"
+	"okey-dokey/ok_action"
+	"okey-dokey/bad"
+)
+
+func defaultEqualFormat(definition *Equal, value *{{.PrimitiveKeyword}})string {
+	return fmt.Sprintf("must be exactly %d", definition.Value)
+}
+
+type Equal struct {
+	Format func(definition *Equal, value *{{.PrimitiveKeyword}})string
+	Value  {{.PrimitiveKeyword}}
+}
+
+func (m *Equal) Validate(value *{{.PrimitiveKeyword}}, violationReceiver bad.MessageReceiver) ok_action.Enum {
+	formatter := defaultEqualFormat
+	if m.Format != nil {
+		formatter = m.Format
+	}
+	if value == nil {
+		return ok_action.Continue
+	}
+	if *value != m.Value {
+		violationReceiver.ReceiveMessage(formatter(m,value))
+	}
+	return ok_action.Continue
+}
