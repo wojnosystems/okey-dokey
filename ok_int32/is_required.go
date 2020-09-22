@@ -1,24 +1,25 @@
 package ok_int32
 
 import (
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_action"
 )
 
-func defaultIsRequiredFormat(definition *IsRequired, value *int32) string {
+func defaultIsRequiredFormat(definition *IsRequired, value optional.Int32) string {
 	return "is required"
 }
 
 type IsRequired struct {
-	Format func(definition *IsRequired, value *int32) string
+	Format func(definition *IsRequired, value optional.Int32) string
 }
 
-func (m *IsRequired) Validate(value *int32, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *IsRequired) Validate(value optional.Int32, violationReceiver bad.MessageReceiver) ok_action.Enum {
 	formatter := defaultIsRequiredFormat
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if value == nil {
+	if !value.IsSet() {
 		violationReceiver.ReceiveMessage(formatter(m, value))
 	}
 	return ok_action.Continue

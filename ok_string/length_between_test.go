@@ -3,6 +3,7 @@ package ok_string
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -11,25 +12,25 @@ func TestLengthBetween_Validate(t *testing.T) {
 	cases := map[string]struct {
 		atLeast  int
 		atMost   int
-		input    *string
+		input    optional.String
 		expected string
 	}{
 		"ok": {
 			atLeast:  4,
 			atMost:   6,
-			input:    addrOf("exact"),
+			input:    optional.StringFrom("exact"),
 			expected: "",
 		},
 		"too long": {
 			atLeast:  4,
 			atMost:   6,
-			input:    addrOf("too long"),
+			input:    optional.StringFrom("too long"),
 			expected: "must have at least 4 and at most 6 characters, but had 8",
 		},
 		"too short": {
 			atLeast:  4,
 			atMost:   6,
-			input:    addrOf("sht"),
+			input:    optional.StringFrom("sht"),
 			expected: "must have at least 4 and at most 6 characters, but had 3",
 		},
 		"nil": {

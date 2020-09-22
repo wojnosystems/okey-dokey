@@ -3,21 +3,21 @@ package ok_bool
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
 
 func TestIsRequired_Validate(t *testing.T) {
 	cases := map[string]struct {
-		input    *bool
+		input    optional.Bool
 		expected string
 	}{
 		"ok": {
-			input:    addrOf(true),
+			input:    optional.BoolFrom(true),
 			expected: "",
 		},
 		"missing": {
-			input:    nil,
 			expected: "is required",
 		},
 	}

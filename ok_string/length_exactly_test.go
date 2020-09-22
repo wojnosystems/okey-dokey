@@ -3,6 +3,7 @@ package ok_string
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,17 +11,17 @@ import (
 func TestLengthExactly_Validate(t *testing.T) {
 	cases := map[string]struct {
 		exactly  int
-		input    *string
+		input    optional.String
 		expected string
 	}{
 		"ok": {
 			exactly:  5,
-			input:    addrOf("exact"),
+			input:    optional.StringFrom("exact"),
 			expected: "",
 		},
 		"too long": {
 			exactly:  5,
-			input:    addrOf("in-exact"),
+			input:    optional.StringFrom("in-exact"),
 			expected: "was not exactly 5 characters",
 		},
 		"nil": {

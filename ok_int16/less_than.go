@@ -2,28 +2,29 @@ package ok_int16
 
 import (
 	"fmt"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_action"
 )
 
-func defaultLessThanFormat(definition *LessThan, value *int16) string {
+func defaultLessThanFormat(definition *LessThan, value optional.Int16) string {
 	return fmt.Sprintf("must be less than %d", definition.Value)
 }
 
 type LessThan struct {
-	Format func(definition *LessThan, value *int16) string
+	Format func(definition *LessThan, value optional.Int16) string
 	Value  int16
 }
 
-func (m *LessThan) Validate(value *int16, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *LessThan) Validate(value optional.Int16, violationReceiver bad.MessageReceiver) ok_action.Enum {
 	formatter := defaultLessThanFormat
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if value == nil {
+	if !value.IsSet() {
 		return ok_action.Continue
 	}
-	if *value >= m.Value {
+	if value.Value() >= m.Value {
 		violationReceiver.ReceiveMessage(formatter(m, value))
 	}
 	return ok_action.Continue

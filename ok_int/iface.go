@@ -1,10 +1,11 @@
 package ok_int
 
 import (
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_action"
 )
 
 type Definer interface {
-	Validate(value *int, violationReceiver bad.MessageReceiver) ok_action.Enum
+	Validate(value optional.Int, violationReceiver bad.MessageReceiver) ok_action.Enum
 }

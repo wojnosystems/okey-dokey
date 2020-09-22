@@ -2,28 +2,29 @@ package ok_int
 
 import (
 	"fmt"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_action"
 )
 
-func defaultGreaterThanOrEqualFormat(definition *GreaterThanOrEqual, value *int) string {
+func defaultGreaterThanOrEqualFormat(definition *GreaterThanOrEqual, value optional.Int) string {
 	return fmt.Sprintf("must be greater than or equal to %d", definition.Value)
 }
 
 type GreaterThanOrEqual struct {
-	Format func(definition *GreaterThanOrEqual, value *int) string
+	Format func(definition *GreaterThanOrEqual, value optional.Int) string
 	Value  int
 }
 
-func (m *GreaterThanOrEqual) Validate(value *int, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *GreaterThanOrEqual) Validate(value optional.Int, violationReceiver bad.MessageReceiver) ok_action.Enum {
 	formatter := defaultGreaterThanOrEqualFormat
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if value == nil {
+	if !value.IsSet() {
 		return ok_action.Continue
 	}
-	if *value < m.Value {
+	if value.Value() < m.Value {
 		violationReceiver.ReceiveMessage(formatter(m, value))
 	}
 	return ok_action.Continue

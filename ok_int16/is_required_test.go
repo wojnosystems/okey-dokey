@@ -3,21 +3,21 @@ package ok_int16
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
 
 func TestIsRequired_Validate(t *testing.T) {
 	cases := map[string]struct {
-		input    *int16
+		input    optional.Int16
 		expected string
 	}{
 		"ok": {
-			input:    addrOf(0),
+			input:    optional.Int16From(0),
 			expected: "",
 		},
 		"missing": {
-			input:    nil,
 			expected: "is required",
 		},
 	}

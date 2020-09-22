@@ -3,6 +3,7 @@ package ok_uint32
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,22 +11,22 @@ import (
 func TestEqual_Validate(t *testing.T) {
 	cases := map[string]struct {
 		eq       uint32
-		input    *uint32
+		input    optional.Uint32
 		expected string
 	}{
 		"ok": {
 			eq:       3,
-			input:    addrOf(3),
+			input:    optional.Uint32From(3),
 			expected: "",
 		},
 		"too large": {
 			eq:       6,
-			input:    addrOf(7),
+			input:    optional.Uint32From(7),
 			expected: "must be exactly 6",
 		},
 		"equal": {
 			eq:       5,
-			input:    addrOf(4),
+			input:    optional.Uint32From(4),
 			expected: "must be exactly 5",
 		},
 		"nil": {

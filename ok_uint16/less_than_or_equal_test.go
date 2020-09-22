@@ -3,6 +3,7 @@ package ok_uint16
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,22 +11,22 @@ import (
 func TestLessThanOrEqual_Validate(t *testing.T) {
 	cases := map[string]struct {
 		lessThanOrEq uint16
-		input        *uint16
+		input        optional.Uint16
 		expected     string
 	}{
 		"ok": {
 			lessThanOrEq: 3,
-			input:        addrOf(2),
+			input:        optional.Uint16From(2),
 			expected:     "",
 		},
 		"too large": {
 			lessThanOrEq: 6,
-			input:        addrOf(7),
+			input:        optional.Uint16From(7),
 			expected:     "must be less than or equal to 6",
 		},
 		"equal": {
 			lessThanOrEq: 5,
-			input:        addrOf(5),
+			input:        optional.Uint16From(5),
 			expected:     "",
 		},
 		"nil": {

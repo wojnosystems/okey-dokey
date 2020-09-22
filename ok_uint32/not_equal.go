@@ -2,28 +2,29 @@ package ok_uint32
 
 import (
 	"fmt"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_action"
 )
 
-func defaultNotEqualFormat(definition *NotEqual, value *uint32) string {
+func defaultNotEqualFormat(definition *NotEqual, value optional.Uint32) string {
 	return fmt.Sprintf("must not be %d", definition.Value)
 }
 
 type NotEqual struct {
-	Format func(definition *NotEqual, value *uint32) string
+	Format func(definition *NotEqual, value optional.Uint32) string
 	Value  uint32
 }
 
-func (m *NotEqual) Validate(value *uint32, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *NotEqual) Validate(value optional.Uint32, violationReceiver bad.MessageReceiver) ok_action.Enum {
 	formatter := defaultNotEqualFormat
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if value == nil {
+	if !value.IsSet() {
 		return ok_action.Continue
 	}
-	if *value == m.Value {
+	if value.Value() == m.Value {
 		violationReceiver.ReceiveMessage(formatter(m, value))
 	}
 	return ok_action.Continue

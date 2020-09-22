@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/urfave/cli/v2"
-	"github.com/wojnosystems/go-poor-generics/pkg/generic"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -26,24 +26,24 @@ func main() {
 			},
 		},
 		Action: func(context *cli.Context) error {
-			primitiveNames := []string{
-				"int",
-				"uint",
-				"int8",
-				"uint8",
-				"int16",
-				"uint16",
-				"int32",
-				"uint32",
-				"int64",
-				"uint64",
+			primitiveToOptionalName := map[string]string{
+				"int":    "Int",
+				"uint":   "Uint",
+				"int8":   "Int8",
+				"uint8":  "Uint8",
+				"int16":  "Int16",
+				"uint16": "Uint16",
+				"int32":  "Int32",
+				"uint32": "Uint32",
+				"int64":  "Int64",
+				"uint64": "Uint64",
 			}
 
 			templateDir := context.String("templatePath")
 			outputRootPath := context.String("outputRootPath")
 
 			// make enclosing folders
-			for _, name := range primitiveNames {
+			for name := range primitiveToOptionalName {
 				_ = os.MkdirAll(filepath.Join(outputRootPath, "ok_"+name), 0700)
 			}
 
@@ -54,9 +54,10 @@ func main() {
 					if err != nil {
 						return err
 					}
-					for _, primitiveName := range primitiveNames {
+					for primitiveName, optionalName := range primitiveToOptionalName {
 						replace := make(map[string]string)
 						replace["PrimitiveKeyword"] = primitiveName
+						replace["OptionalType"] = optionalName
 						_, fileNameWithExt := filepath.Split(path)
 						fileName := strings.Split(fileNameWithExt, ".")[0] + ".go"
 						var out *os.File
@@ -66,7 +67,7 @@ func main() {
 						}
 						func() {
 							defer out.Close()
-							err = generic.Generate("ok_"+primitiveName, replace, source, out)
+							err = generateFile("ok_"+primitiveName, replace, source, out)
 						}()
 						if err != nil {
 							return err
@@ -81,4 +82,13 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+}
+
+func generateFile(packageName string, variables map[string]string, source *template.Template, writer io.Writer) (err error) {
+	_, err = writer.Write([]byte("package " + packageName + "\n\n"))
+	if err != nil {
+		return
+	}
+	err = source.Execute(writer, variables)
+	return
 }

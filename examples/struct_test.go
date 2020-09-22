@@ -2,6 +2,7 @@ package examples
 
 import (
 	"github.com/stretchr/testify/assert"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_int"
 	"okey-dokey/ok_string"
@@ -9,8 +10,8 @@ import (
 )
 
 type model struct {
-	Name *string
-	Age  *int
+	Name optional.String
+	Age  optional.Int
 }
 
 type modelValidationDefs struct {
@@ -59,14 +60,14 @@ func TestModel(t *testing.T) {
 	}{
 		"ok": {
 			m: model{
-				Name: strAddr("chris"),
-				Age:  intAddr(30),
+				Name: optional.StringFrom("chris"),
+				Age:  optional.IntFrom(30),
 			},
 			expected: map[string][]string{},
 		},
 		"string missing": {
 			m: model{
-				Age: intAddr(30),
+				Age: optional.IntFrom(30),
 			},
 			expected: map[string][]string{
 				"name": []string{"is required"},
@@ -74,7 +75,7 @@ func TestModel(t *testing.T) {
 		},
 		"age missing": {
 			m: model{
-				Name: strAddr("chris"),
+				Name: optional.StringFrom("chris"),
 			},
 			expected: map[string][]string{
 				"age": []string{"is required"},
@@ -82,8 +83,8 @@ func TestModel(t *testing.T) {
 		},
 		"age too young": {
 			m: model{
-				Name: strAddr("chris"),
-				Age:  intAddr(17),
+				Name: optional.StringFrom("chris"),
+				Age:  optional.IntFrom(17),
 			},
 			expected: map[string][]string{
 				"age": []string{"must be greater than or equal to 18"},
@@ -91,8 +92,8 @@ func TestModel(t *testing.T) {
 		},
 		"name too long": {
 			m: model{
-				Name: strAddr("chriswojno1"),
-				Age:  intAddr(30),
+				Name: optional.StringFrom("chriswojno1"),
+				Age:  optional.IntFrom(30),
 			},
 			expected: map[string][]string{
 				"name": []string{"cannot have more than 10 characters"},
@@ -107,12 +108,4 @@ func TestModel(t *testing.T) {
 			assert.Equal(t, bad.SliceMemberReceiver(c.expected), actual)
 		})
 	}
-}
-
-func strAddr(value string) *string {
-	return &value
-}
-
-func intAddr(value int) *int {
-	return &value
 }

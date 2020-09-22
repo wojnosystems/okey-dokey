@@ -3,6 +3,7 @@ package ok_string
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,17 +11,17 @@ import (
 func TestLengthAtMost_Validate(t *testing.T) {
 	cases := map[string]struct {
 		atMost   int
-		input    *string
+		input    optional.String
 		expected string
 	}{
 		"ok": {
 			atMost:   20,
-			input:    addrOf("short"),
+			input:    optional.StringFrom("short"),
 			expected: "",
 		},
 		"too long": {
 			atMost:   5,
-			input:    addrOf("lessthan20"),
+			input:    optional.StringFrom("lessthan20"),
 			expected: "cannot have more than 5 characters",
 		},
 		"nil": {

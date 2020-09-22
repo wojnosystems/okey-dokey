@@ -3,6 +3,7 @@ package ok_int
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,22 +11,22 @@ import (
 func TestLessThan_Validate(t *testing.T) {
 	cases := map[string]struct {
 		lessThan int
-		input    *int
+		input    optional.Int
 		expected string
 	}{
 		"ok": {
 			lessThan: 3,
-			input:    addrOf(2),
+			input:    optional.IntFrom(2),
 			expected: "",
 		},
 		"too large": {
 			lessThan: 6,
-			input:    addrOf(7),
+			input:    optional.IntFrom(7),
 			expected: "must be less than 6",
 		},
 		"equal": {
 			lessThan: 5,
-			input:    addrOf(5),
+			input:    optional.IntFrom(5),
 			expected: "must be less than 5",
 		},
 		"nil": {

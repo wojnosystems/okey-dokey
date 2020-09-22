@@ -3,6 +3,7 @@ package ok_int64
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,22 +11,22 @@ import (
 func TestGreaterThanOrEqual_Validate(t *testing.T) {
 	cases := map[string]struct {
 		greaterThanOrEq int64
-		input           *int64
+		input           optional.Int64
 		expected        string
 	}{
 		"ok": {
 			greaterThanOrEq: 3,
-			input:           addrOf(4),
+			input:           optional.Int64From(4),
 			expected:        "",
 		},
 		"too large": {
 			greaterThanOrEq: 6,
-			input:           addrOf(5),
+			input:           optional.Int64From(5),
 			expected:        "must be greater than or equal to 6",
 		},
 		"equal": {
 			greaterThanOrEq: 5,
-			input:           addrOf(5),
+			input:           optional.Int64From(5),
 			expected:        "",
 		},
 		"nil": {

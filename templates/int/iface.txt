@@ -1,8 +1,9 @@
 import (
-	"okey-dokey/ok_action"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
+	"okey-dokey/ok_action"
 )
 
 type Definer interface {
-	Validate(value *{{.PrimitiveKeyword}}, violationReceiver bad.MessageReceiver) ok_action.Enum
+	Validate(value optional.{{.OptionalType}}, violationReceiver bad.MessageReceiver) ok_action.Enum
 }

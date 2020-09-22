@@ -3,6 +3,7 @@ package ok_int8
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,22 +11,22 @@ import (
 func TestNotEqual_Validate(t *testing.T) {
 	cases := map[string]struct {
 		notEq    int8
-		input    *int8
+		input    optional.Int8
 		expected string
 	}{
 		"ok less": {
 			notEq:    3,
-			input:    addrOf(2),
+			input:    optional.Int8From(2),
 			expected: "",
 		},
 		"ok greater": {
 			notEq:    3,
-			input:    addrOf(4),
+			input:    optional.Int8From(4),
 			expected: "",
 		},
 		"equal": {
 			notEq:    3,
-			input:    addrOf(3),
+			input:    optional.Int8From(3),
 			expected: "must not be 3",
 		},
 		"nil": {

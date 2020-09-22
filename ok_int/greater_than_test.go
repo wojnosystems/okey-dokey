@@ -3,6 +3,7 @@ package ok_int
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"testing"
 )
@@ -10,22 +11,22 @@ import (
 func TestGreaterThan_Validate(t *testing.T) {
 	cases := map[string]struct {
 		greaterThan int
-		input       *int
+		input       optional.Int
 		expected    string
 	}{
 		"ok": {
 			greaterThan: 3,
-			input:       addrOf(4),
+			input:       optional.IntFrom(4),
 			expected:    "",
 		},
 		"too large": {
 			greaterThan: 6,
-			input:       addrOf(5),
+			input:       optional.IntFrom(5),
 			expected:    "must be greater than 6",
 		},
 		"equal": {
 			greaterThan: 5,
-			input:       addrOf(5),
+			input:       optional.IntFrom(5),
 			expected:    "must be greater than 5",
 		},
 		"nil": {
