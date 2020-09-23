@@ -5,6 +5,7 @@ import (
 	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_int"
+	"okey-dokey/ok_range"
 	"okey-dokey/ok_slice"
 	"okey-dokey/ok_string"
 	"testing"
@@ -48,8 +49,8 @@ var modelValidations = modelValidationDefs{
 	IceCreamFlavors: ok_slice.On{
 		Id: "icecream_flavors",
 		Ensure: []ok_slice.Definer{
-			&ok_slice.ItemCountAtLeast{
-				AtLeast: 2,
+			&ok_slice.ItemCountBetween{
+				Between: ok_range.IntBetween(2, 10),
 			},
 		},
 	},
