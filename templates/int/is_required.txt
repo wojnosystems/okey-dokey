@@ -4,12 +4,12 @@ import (
 	"okey-dokey/ok_action"
 )
 
-func defaultIsRequiredFormat(definition *IsRequired, value optional.{{.OptionalType}})string {
+func defaultIsRequiredFormat(definition *IsRequired, value optional.{{.OptionalType}}) string {
 	return "is required"
 }
 
 type IsRequired struct {
-	Format func(definition *IsRequired, value optional.{{.OptionalType}})string
+	Format func(definition *IsRequired, value optional.{{.OptionalType}}) string
 }
 
 func (m *IsRequired) Validate(value optional.{{.OptionalType}}, violationReceiver bad.MessageReceiver) ok_action.Enum {
@@ -18,7 +18,7 @@ func (m *IsRequired) Validate(value optional.{{.OptionalType}}, violationReceive
 		formatter = m.Format
 	}
 	if !value.IsSet() {
-		violationReceiver.ReceiveMessage(formatter(m,value))
+		violationReceiver.ReceiveMessage(formatter(m, value))
 	}
 	return ok_action.Continue
 }

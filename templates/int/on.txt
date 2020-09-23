@@ -1,4 +1,4 @@
 type On struct {
-	Id string
+	Id     string
 	Ensure []Definer
 }

@@ -7,11 +7,11 @@ import (
 )
 
 func TestEqual_Validate(t *testing.T) {
-	cases := map[string]struct{
+	cases := map[string]struct {
 		eq       {{.PrimitiveKeyword}}
 		input    optional.{{.OptionalType}}
 		expected string
-	} {
+	}{
 		"ok": {
 			eq:       3,
 			input:    optional.{{.OptionalType}}From(3),
@@ -28,7 +28,7 @@ func TestEqual_Validate(t *testing.T) {
 			expected: "must be exactly 5",
 		},
 		"nil": {
-			eq:  5,
+			eq: 5,
 		},
 	}
 

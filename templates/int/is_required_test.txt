@@ -7,12 +7,12 @@ import (
 )
 
 func TestIsRequired_Validate(t *testing.T) {
-	cases := map[string]struct{
+	cases := map[string]struct {
 		input    optional.{{.OptionalType}}
 		expected string
-	} {
+	}{
 		"ok": {
-			input: optional.{{.OptionalType}}From(0),
+			input:    optional.{{.OptionalType}}From(0),
 			expected: "",
 		},
 		"missing": {
