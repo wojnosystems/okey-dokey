@@ -8,22 +8,22 @@ import (
 
 func TestEqual_Validate(t *testing.T) {
 	cases := map[string]struct{
-		eq  {{.PrimitiveKeyword}}
+		eq       {{.PrimitiveKeyword}}
 		input    optional.{{.OptionalType}}
 		expected string
 	} {
 		"ok": {
-			eq:  3,
+			eq:       3,
 			input:    optional.{{.OptionalType}}From(3),
 			expected: "",
 		},
 		"too large": {
-			eq:  6,
+			eq:       6,
 			input:    optional.{{.OptionalType}}From(7),
 			expected: "must be exactly 6",
 		},
 		"equal": {
-			eq:  5,
+			eq:       5,
 			input:    optional.{{.OptionalType}}From(4),
 			expected: "must be exactly 5",
 		},

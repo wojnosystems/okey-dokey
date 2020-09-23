@@ -5,20 +5,27 @@ import (
 	"github.com/wojnosystems/go-optional"
 	"okey-dokey/bad"
 	"okey-dokey/ok_int"
+	"okey-dokey/ok_slice"
 	"okey-dokey/ok_string"
 	"testing"
 )
 
 type model struct {
-	Name optional.String
-	Age  optional.Int
+	Name            optional.String
+	Age             optional.Int
+	IceCreamFlavors []optional.String
 }
 
 type modelValidationDefs struct {
-	Name ok_string.On
-	Age  ok_int.On
+	Name            ok_string.On
+	Age             ok_int.On
+	IceCreamFlavors ok_slice.On
+	IceCreamFlavor  ok_string.On
 }
 
+// Validations defined separately so that they can be swapped out on the model, depending on the situation
+// This pre-compiles the validations so that they exist only once. Then the validations, which have no state,
+// are run on the model
 var modelValidations = modelValidationDefs{
 	Name: ok_string.On{
 		Id: "name",
@@ -38,19 +45,21 @@ var modelValidations = modelValidationDefs{
 			},
 		},
 	},
+	IceCreamFlavors: ok_slice.On{
+		Id: "icecream_flavors",
+		Ensure: []ok_slice.Definer{
+			&ok_slice.ItemCountAtLeast{
+				AtLeast: 2,
+			},
+		},
+	},
 }
 
 // This method should be provided by the library as a reflection implementation
 // It just goes through all of the items and evaluates them, then finally, evaluates the entire struct
-func (m model) Validate(receiver bad.MemberReceiver) {
-	{
-		mem := receiver.MessageReceiver(modelValidations.Name.Id)
-		ok_string.Validate(m.Name, &modelValidations.Name, mem)
-	}
-	{
-		mem := receiver.MessageReceiver(modelValidations.Age.Id)
-		ok_int.Validate(m.Age, &modelValidations.Age, mem)
-	}
+func (v modelValidationDefs) Validate(on *model, receiver bad.MemberReceiver) {
+	ok_string.Validate(on.Name, &v.Name, receiver)
+	ok_int.Validate(on.Age, &v.Age, receiver)
 }
 
 func TestModel(t *testing.T) {
@@ -70,7 +79,7 @@ func TestModel(t *testing.T) {
 				Age: optional.IntFrom(30),
 			},
 			expected: map[string][]string{
-				"name": []string{"is required"},
+				"name": {"is required"},
 			},
 		},
 		"age missing": {
@@ -78,7 +87,7 @@ func TestModel(t *testing.T) {
 				Name: optional.StringFrom("chris"),
 			},
 			expected: map[string][]string{
-				"age": []string{"is required"},
+				"age": {"is required"},
 			},
 		},
 		"age too young": {
@@ -87,7 +96,7 @@ func TestModel(t *testing.T) {
 				Age:  optional.IntFrom(17),
 			},
 			expected: map[string][]string{
-				"age": []string{"must be greater than or equal to 18"},
+				"age": {"must be greater than or equal to 18"},
 			},
 		},
 		"name too long": {
@@ -96,7 +105,7 @@ func TestModel(t *testing.T) {
 				Age:  optional.IntFrom(30),
 			},
 			expected: map[string][]string{
-				"name": []string{"cannot have more than 10 characters"},
+				"name": {"cannot have more than 10 characters"},
 			},
 		},
 	}
@@ -104,7 +113,7 @@ func TestModel(t *testing.T) {
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
 			actual := bad.SliceMemberReceiver{}
-			c.m.Validate(&actual)
+			modelValidations.Validate(&c.m, &actual)
 			assert.Equal(t, bad.SliceMemberReceiver(c.expected), actual)
 		})
 	}

@@ -4,9 +4,10 @@ import (
 	"okey-dokey/ok_action"
 )
 
-func Validate( value optional.{{.OptionalType}}, definitions *On, violations bad.MessageReceiver ) {
+func Validate(value optional.{{.OptionalType}}, definitions *On, violations bad.MemberReceiver) {
+	mem := violations.MessageReceiver(definitions.Id)
 	for _, definition := range definitions.Ensure {
-		action := definition.Validate(value, violations)
+		action := definition.Validate(value, mem)
 		if action != ok_action.Continue {
 			return
 		}

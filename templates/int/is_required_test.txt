@@ -22,8 +22,7 @@ func TestIsRequired_Validate(t *testing.T) {
 
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
-			validator := IsRequired{
-			}
+			validator := IsRequired{}
 			validationErrors := bad.SliceMessageReceiver{}
 			validator.Validate(c.input, &validationErrors)
 			if len(c.expected) != 0 {
