@@ -12,16 +12,16 @@ import (
 )
 
 type model struct {
-	Name            optional.String
-	Age             optional.Int
-	IceCreamFlavors []optional.String
+	Name      optional.String
+	Age       optional.Int
+	IceCreams []optional.String
 }
 
 type modelValidationDefs struct {
-	Name            ok_string.On
-	Age             ok_int.On
-	IceCreamFlavors ok_slice.On
-	IceCreamFlavor  ok_string.On
+	Name      ok_string.On
+	Age       ok_int.On
+	IceCreams ok_slice.On
+	Flavor    ok_string.On
 }
 
 // Validations defined separately so that they can be swapped out on the model, depending on the situation
@@ -46,11 +46,24 @@ var modelValidations = modelValidationDefs{
 			},
 		},
 	},
-	IceCreamFlavors: ok_slice.On{
+	IceCreams: ok_slice.On{
 		Id: "icecream_flavors",
 		Ensure: []ok_slice.Definer{
 			&ok_slice.ItemCountBetween{
 				Between: ok_range.IntBetween(2, 10),
+			},
+		},
+	},
+	Flavor: ok_string.On{
+		Id: "flavor",
+		Ensure: []ok_string.Definer{
+			&ok_string.OneOf{
+				Only: (&ok_string.SortedSetBuilder{}).
+					Add("raspberry").
+					Add("vanilla").
+					Add("chocolate").
+					Add("pistachio").
+					Sort(),
 			},
 		},
 	},
@@ -61,6 +74,10 @@ var modelValidations = modelValidationDefs{
 func (v modelValidationDefs) Validate(on *model, receiver bad.MemberReceiver) {
 	ok_string.Validate(on.Name, &v.Name, receiver)
 	ok_int.Validate(on.Age, &v.Age, receiver)
+	for _, flavor := range on.IceCreams {
+		// #TODO Need index support
+		ok_string.Validate(flavor, &v.Flavor, receiver)
+	}
 }
 
 func TestModel(t *testing.T) {
@@ -107,6 +124,19 @@ func TestModel(t *testing.T) {
 			},
 			expected: map[string][]string{
 				"name": {"cannot have more than 10 characters"},
+			},
+		},
+		"bad ice cream": {
+			m: model{
+				Name: optional.StringFrom("chris"),
+				Age:  optional.IntFrom(30),
+				IceCreams: []optional.String{
+					optional.StringFrom("coffee"),
+					optional.StringFrom("chocolate"),
+				},
+			},
+			expected: map[string][]string{
+				"flavor": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
 			},
 		},
 	}
