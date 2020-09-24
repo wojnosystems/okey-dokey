@@ -142,10 +142,12 @@ func TestModel(t *testing.T) {
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("coffee"),
 					optional.StringFrom("chocolate"),
+					optional.StringFrom("orange"),
 				},
 			},
 			expected: map[string][]string{
 				"iceCreamFlavors[0]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
+				"iceCreamFlavors[2]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
 			},
 		},
 	}
