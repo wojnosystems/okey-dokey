@@ -15,34 +15,33 @@ func TestOneOf_Validate(t *testing.T) {
 		expected string
 	}{
 		"ok": {
-			oneOf:    (&SortedSetBuilder{}).Add("apple").Add("banana").Add("carrot").Add("durian").Sort(),
+			oneOf:    NewSortedSetBuilder("apple", "durian", "carrot", "banana").Build(),
 			input:    optional.StringFrom("carrot"),
 			expected: "",
 		},
 		"missing": {
-			oneOf:    (&SortedSetBuilder{}).Add("apple").Add("banana").Add("carrot").Add("durian").Sort(),
+			oneOf:    NewSortedSetBuilder("apple", "durian", "carrot", "banana").Build(),
 			input:    optional.StringFrom("invalid"),
 			expected: "must be one of the following: apple, banana, carrot, durian",
 		},
 		"missing long list": {
-			oneOf: (&SortedSetBuilder{}).
-				Add("apple").
-				Add("banana").
-				Add("carrot").
-				Add("durian").
-				Add("eggplant").
-				Add("fig").
-				Add("grape").
-				Add("honeydew").
-				Add("ifood").
-				Add("jackfruit").
-				Add("kiwi").
-				Sort(),
+			oneOf: NewSortedSetBuilder(
+				"apple",
+				"banana",
+				"carrot",
+				"durian",
+				"eggplant",
+				"fig",
+				"grape",
+				"honeydew",
+				"ifood",
+				"jackfruit",
+				"kiwi").Build(),
 			input:    optional.StringFrom("invalid"),
 			expected: "must be one of the following: apple, banana, carrot, durian, eggplant, fig, grape, honeydew, ifood, jackfruit, ...",
 		},
 		"empty": {
-			oneOf: (&SortedSetBuilder{}).Sort(),
+			oneOf: SortedSet{},
 		},
 	}
 

@@ -8,6 +8,13 @@ type SortedSetBuilder struct {
 	values map[string]bool
 }
 
+func NewSortedSetBuilder(values ...string) (b SortedSetBuilder) {
+	for _, value := range values {
+		b.Add(value)
+	}
+	return
+}
+
 func (b *SortedSetBuilder) Add(value string) *SortedSetBuilder {
 	if b.values == nil {
 		b.values = make(map[string]bool)
@@ -16,7 +23,7 @@ func (b *SortedSetBuilder) Add(value string) *SortedSetBuilder {
 	return b
 }
 
-func (b SortedSetBuilder) Sort() (out SortedSet) {
+func (b SortedSetBuilder) Build() (out SortedSet) {
 	out = make([]string, len(b.values))
 	index := 0
 	for key, _ := range b.values {

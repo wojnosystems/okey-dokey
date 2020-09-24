@@ -6,22 +6,21 @@ import (
 	"okey-dokey/bad"
 	"okey-dokey/ok_int"
 	"okey-dokey/ok_range"
-	"okey-dokey/ok_slice"
+	"okey-dokey/ok_slice_string"
 	"okey-dokey/ok_string"
 	"testing"
 )
 
 type model struct {
-	Name      optional.String
-	Age       optional.Int
-	IceCreams []optional.String
+	Name            optional.String
+	Age             optional.Int
+	IceCreamFlavors []optional.String
 }
 
 type modelValidationDefs struct {
-	Name      ok_string.On
-	Age       ok_int.On
-	IceCreams ok_slice.On
-	Flavor    ok_string.On
+	Name            ok_string.On
+	Age             ok_int.On
+	IceCreamFlavors ok_slice_string.On
 }
 
 // Validations defined separately so that they can be swapped out on the model, depending on the situation
@@ -46,24 +45,17 @@ var modelValidations = modelValidationDefs{
 			},
 		},
 	},
-	IceCreams: ok_slice.On{
-		Id: "icecream_flavors",
-		Ensure: []ok_slice.Definer{
-			&ok_slice.ItemCountBetween{
+	IceCreamFlavors: ok_slice_string.On{
+		Id: "iceCreamFlavors",
+		Ensure: []ok_slice_string.Definer{
+			&ok_slice_string.ItemCountBetween{
 				Between: ok_range.IntBetween(2, 10),
 			},
 		},
-	},
-	Flavor: ok_string.On{
-		Id: "flavor",
-		Ensure: []ok_string.Definer{
+		EnsureItems: []ok_string.Definer{
 			&ok_string.OneOf{
-				Only: (&ok_string.SortedSetBuilder{}).
-					Add("raspberry").
-					Add("vanilla").
-					Add("chocolate").
-					Add("pistachio").
-					Sort(),
+				Only: ok_string.NewSortedSetBuilder("raspberry", "vanilla", "chocolate", "pistachio").
+					Build(),
 			},
 		},
 	},
@@ -74,10 +66,7 @@ var modelValidations = modelValidationDefs{
 func (v modelValidationDefs) Validate(on *model, receiver bad.MemberReceiver) {
 	ok_string.Validate(on.Name, &v.Name, receiver)
 	ok_int.Validate(on.Age, &v.Age, receiver)
-	for _, flavor := range on.IceCreams {
-		// #TODO Need index support
-		ok_string.Validate(flavor, &v.Flavor, receiver)
-	}
+	ok_slice_string.Validate(on.IceCreamFlavors, &v.IceCreamFlavors, receiver)
 }
 
 func TestModel(t *testing.T) {
@@ -89,12 +78,20 @@ func TestModel(t *testing.T) {
 			m: model{
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(30),
+				IceCreamFlavors: []optional.String{
+					optional.StringFrom("chocolate"),
+					optional.StringFrom("vanilla"),
+				},
 			},
 			expected: map[string][]string{},
 		},
 		"string missing": {
 			m: model{
 				Age: optional.IntFrom(30),
+				IceCreamFlavors: []optional.String{
+					optional.StringFrom("chocolate"),
+					optional.StringFrom("vanilla"),
+				},
 			},
 			expected: map[string][]string{
 				"name": {"is required"},
@@ -103,6 +100,10 @@ func TestModel(t *testing.T) {
 		"age missing": {
 			m: model{
 				Name: optional.StringFrom("chris"),
+				IceCreamFlavors: []optional.String{
+					optional.StringFrom("chocolate"),
+					optional.StringFrom("vanilla"),
+				},
 			},
 			expected: map[string][]string{
 				"age": {"is required"},
@@ -112,6 +113,10 @@ func TestModel(t *testing.T) {
 			m: model{
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(17),
+				IceCreamFlavors: []optional.String{
+					optional.StringFrom("chocolate"),
+					optional.StringFrom("vanilla"),
+				},
 			},
 			expected: map[string][]string{
 				"age": {"must be greater than or equal to 18"},
@@ -121,6 +126,10 @@ func TestModel(t *testing.T) {
 			m: model{
 				Name: optional.StringFrom("chriswojno1"),
 				Age:  optional.IntFrom(30),
+				IceCreamFlavors: []optional.String{
+					optional.StringFrom("chocolate"),
+					optional.StringFrom("vanilla"),
+				},
 			},
 			expected: map[string][]string{
 				"name": {"cannot have more than 10 characters"},
@@ -130,13 +139,13 @@ func TestModel(t *testing.T) {
 			m: model{
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(30),
-				IceCreams: []optional.String{
+				IceCreamFlavors: []optional.String{
 					optional.StringFrom("coffee"),
 					optional.StringFrom("chocolate"),
 				},
 			},
 			expected: map[string][]string{
-				"flavor": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
+				"iceCreamFlavors[0]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
 			},
 		},
 	}
