@@ -12,6 +12,7 @@ import (
 )
 
 type model struct {
+	Id              string
 	Name            optional.String
 	Age             optional.Int
 	IceCreamFlavors []optional.String
@@ -63,7 +64,8 @@ var modelValidations = modelValidationDefs{
 
 // This method should be provided by the library as a reflection implementation
 // It just goes through all of the items and evaluates them, then finally, evaluates the entire struct
-func (v modelValidationDefs) Validate(on *model, receiver bad.MemberReceiver) {
+func (v modelValidationDefs) Validate(on *model, structReceiver bad.StructReceiver) {
+	receiver := structReceiver.MemberReceiver(on.Id)
 	ok_string.Validate(on.Name, &v.Name, receiver)
 	ok_int.Validate(on.Age, &v.Age, receiver)
 	ok_slice_string.Validate(on.IceCreamFlavors, &v.IceCreamFlavors, receiver)
@@ -72,10 +74,11 @@ func (v modelValidationDefs) Validate(on *model, receiver bad.MemberReceiver) {
 func TestModel(t *testing.T) {
 	cases := map[string]struct {
 		m        model
-		expected map[string][]string
+		expected map[string]bad.SliceMemberReceiver
 	}{
 		"ok": {
 			m: model{
+				Id:   "user",
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
@@ -83,34 +86,43 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: map[string][]string{},
+			expected: map[string]bad.SliceMemberReceiver{
+				"user": {},
+			},
 		},
 		"string missing": {
 			m: model{
+				Id:  "user",
 				Age: optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: map[string][]string{
-				"name": {"is required"},
+			expected: map[string]bad.SliceMemberReceiver{
+				"user": {
+					"name": {"is required"},
+				},
 			},
 		},
 		"age missing": {
 			m: model{
+				Id:   "user",
 				Name: optional.StringFrom("chris"),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: map[string][]string{
-				"age": {"is required"},
+			expected: map[string]bad.SliceMemberReceiver{
+				"user": {
+					"age": {"is required"},
+				},
 			},
 		},
 		"age too young": {
 			m: model{
+				Id:   "user",
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(17),
 				IceCreamFlavors: []optional.String{
@@ -118,12 +130,15 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: map[string][]string{
-				"age": {"must be greater than or equal to 18"},
+			expected: map[string]bad.SliceMemberReceiver{
+				"user": {
+					"age": {"must be greater than or equal to 18"},
+				},
 			},
 		},
 		"name too long": {
 			m: model{
+				Id:   "user",
 				Name: optional.StringFrom("veryLongName"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
@@ -131,12 +146,15 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: map[string][]string{
-				"name": {"cannot have more than 10 characters"},
+			expected: map[string]bad.SliceMemberReceiver{
+				"user": {
+					"name": {"cannot have more than 10 characters"},
+				},
 			},
 		},
 		"bad ice cream": {
 			m: model{
+				Id:   "user",
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
@@ -145,18 +163,20 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("orange"),
 				},
 			},
-			expected: map[string][]string{
-				"iceCreamFlavors[0]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
-				"iceCreamFlavors[2]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
+			expected: map[string]bad.SliceMemberReceiver{
+				"user": {
+					"iceCreamFlavors[0]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
+					"iceCreamFlavors[2]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
+				},
 			},
 		},
 	}
 
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
-			actual := bad.SliceMemberReceiver{}
+			actual := make(bad.SliceStructReceiver)
 			modelValidations.Validate(&c.m, &actual)
-			assert.Equal(t, bad.SliceMemberReceiver(c.expected), actual)
+			assert.Equal(t, bad.SliceStructReceiver(c.expected), actual)
 		})
 	}
 }
