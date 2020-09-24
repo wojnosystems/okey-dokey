@@ -21,7 +21,7 @@ func TestLengthAtMost_Validate(t *testing.T) {
 		},
 		"too long": {
 			atMost:   5,
-			input:    optional.StringFrom("lessthan20"),
+			input:    optional.StringFrom("lessThan20"),
 			expected: "cannot have more than 5 characters",
 		},
 		"nil": {

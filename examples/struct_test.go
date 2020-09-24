@@ -124,7 +124,7 @@ func TestModel(t *testing.T) {
 		},
 		"name too long": {
 			m: model{
-				Name: optional.StringFrom("chriswojno1"),
+				Name: optional.StringFrom("veryLongName"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),

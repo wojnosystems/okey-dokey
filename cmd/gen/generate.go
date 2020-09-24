@@ -12,7 +12,7 @@ import (
 
 func main() {
 	app := cli.App{
-		Name:        "generate_ints",
+		Name:        "generate",
 		Version:     "1.0.0",
 		Description: "Generate the code for this module using the templates/int .txt files",
 		Flags: []cli.Flag{
@@ -28,7 +28,7 @@ func main() {
 		Action: func(context *cli.Context) (err error) {
 			templateDir := context.String("templatePath")
 			outputRootPath := context.String("outputRootPath")
-			err = ints(templateDir+"/int", outputRootPath)
+			err = integers(templateDir+"/int", outputRootPath)
 			if err != nil {
 				return
 			}
@@ -42,7 +42,7 @@ func main() {
 	}
 }
 
-func ints(templateDir, outputRootPath string) (err error) {
+func integers(templateDir, outputRootPath string) (err error) {
 	primitiveToOptionalName := map[string]string{
 		"int":    "Int",
 		"uint":   "Uint",
