@@ -5,5 +5,5 @@ import (
 )
 
 type Definer interface {
-    Validate(value []optional.{{.OptionalType}}, violationReceiver bad.MessageReceiver) ok_action.Enum
+  Validate(value []optional.{{.OptionalType}}, violationReceiver bad.MessageReceiver) ok_action.Enum
 }

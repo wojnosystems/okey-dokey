@@ -82,7 +82,9 @@ func ints(templateDir, outputRootPath string) (err error) {
 					return err
 				}
 				func() {
-					defer out.Close()
+					defer func() {
+						_ = out.Close()
+					}()
 					err = generateFile(packagePrefix+primitiveName, replace, source, out)
 				}()
 				if err != nil {
@@ -138,7 +140,9 @@ func slices(templateDir, outputRootPath string) (err error) {
 					return err
 				}
 				func() {
-					defer out.Close()
+					defer func() {
+						_ = out.Close()
+					}()
 					err = generateFile(packagePrefix+primitiveName, replace, source, out)
 				}()
 				if err != nil {
