@@ -26,7 +26,7 @@ func (b *SortedSetBuilder) Add(value string) *SortedSetBuilder {
 func (b SortedSetBuilder) Build() (out SortedSet) {
 	out = make([]string, len(b.values))
 	index := 0
-	for key, _ := range b.values {
+	for key := range b.values {
 		out[index] = key
 		index++
 	}

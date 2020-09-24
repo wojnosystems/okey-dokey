@@ -114,6 +114,8 @@ func slices(templateDir, outputRootPath string) (err error) {
 		//"float64": "Float64",
 	}
 
+	onlyTestForPrimitive := "string"
+
 	packagePrefix := "ok_slice_"
 
 	// make enclosing folders
@@ -129,6 +131,9 @@ func slices(templateDir, outputRootPath string) (err error) {
 				return err
 			}
 			for primitiveName, optionalName := range primitiveToOptionalName {
+				if strings.HasSuffix(path, "_test.txt") && primitiveName != onlyTestForPrimitive {
+					continue
+				}
 				replace := make(map[string]string)
 				replace["PrimitiveKeyword"] = primitiveName
 				replace["OptionalType"] = optionalName
