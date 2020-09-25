@@ -6,7 +6,6 @@ import "strings"
 // so that they can handle notifications about errors
 type Fields struct {
 	MemberEmitter
-	parent      *Fields
 	currentName string
 	BadFields   map[string][]string
 }
@@ -28,7 +27,6 @@ func (r *Fields) down(memberId string) *Fields {
 	}
 	return &Fields{
 		currentName: name,
-		parent:      r,
 		BadFields:   r.BadFields,
 	}
 }
