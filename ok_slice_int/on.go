@@ -1,6 +1,6 @@
 package ok_slice_int
 
-import "okey-dokey/ok_int"
+import "github.com/wojnosystems/okey-dokey/ok_int"
 
 type On struct {
 	Ensure      []Definer

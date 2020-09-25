@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/wojnosystems/go-optional"
 	sorted_set "github.com/wojnosystems/go-sorted-set"
-	"okey-dokey/bad"
-	"okey-dokey/ok_action"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_action"
 	"sort"
 	"strings"
 )

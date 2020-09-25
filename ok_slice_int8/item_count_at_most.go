@@ -3,8 +3,8 @@ package ok_slice_int8
 import (
 	"fmt"
 	"github.com/wojnosystems/go-optional"
-	"okey-dokey/bad"
-	"okey-dokey/ok_action"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_action"
 )
 
 func defaultItemCountAtMostFormat(definition *ItemCountAtMost, value []optional.Int8) string {

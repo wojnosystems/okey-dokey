@@ -2,8 +2,8 @@ package ok_uint8
 
 import (
 	"github.com/wojnosystems/go-optional"
-	"okey-dokey/bad"
-	"okey-dokey/ok_action"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_action"
 )
 
 func Validate(value optional.Uint8, on *On, violations bad.Emitter) {

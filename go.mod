@@ -1,4 +1,4 @@
-module okey-dokey
+module github.com/wojnosystems/okey-dokey
 
 go 1.14
 

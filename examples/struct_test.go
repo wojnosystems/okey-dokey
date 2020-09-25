@@ -4,11 +4,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/wojnosystems/go-optional"
 	sorted_set "github.com/wojnosystems/go-sorted-set"
-	"okey-dokey/bad"
-	"okey-dokey/ok_int"
-	"okey-dokey/ok_range"
-	"okey-dokey/ok_slice_string"
-	"okey-dokey/ok_string"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_int"
+	"github.com/wojnosystems/okey-dokey/ok_range"
+	"github.com/wojnosystems/okey-dokey/ok_slice_string"
+	"github.com/wojnosystems/okey-dokey/ok_string"
 	"testing"
 )
 

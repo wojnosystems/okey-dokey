@@ -1,4 +1,4 @@
-import "okey-dokey/ok_{{.PrimitiveKeyword}}"
+import "github.com/wojnosystems/okey-dokey/ok_{{.PrimitiveKeyword}}"
 
 type On struct {
 	Ensure      []Definer

@@ -1,6 +1,6 @@
 package ok_slice_bool
 
-import "okey-dokey/ok_bool"
+import "github.com/wojnosystems/okey-dokey/ok_bool"
 
 type On struct {
 	Ensure      []Definer

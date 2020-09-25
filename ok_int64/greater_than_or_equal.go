@@ -3,8 +3,8 @@ package ok_int64
 import (
 	"fmt"
 	"github.com/wojnosystems/go-optional"
-	"okey-dokey/bad"
-	"okey-dokey/ok_action"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_action"
 )
 
 func defaultGreaterThanOrEqualFormat(definition *GreaterThanOrEqual, value optional.Int64) string {

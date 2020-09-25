@@ -4,7 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/wojnosystems/go-optional"
-	"okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/bad"
 	"testing"
 )
 

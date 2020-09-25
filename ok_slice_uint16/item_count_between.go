@@ -3,9 +3,9 @@ package ok_slice_uint16
 import (
 	"fmt"
 	"github.com/wojnosystems/go-optional"
-	"okey-dokey/bad"
-	"okey-dokey/ok_action"
-	"okey-dokey/ok_range"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_action"
+	"github.com/wojnosystems/okey-dokey/ok_range"
 )
 
 func defaultItemCountBetweenFormat(definition *ItemCountBetween, value []optional.Uint16) string {
