@@ -3,7 +3,7 @@ package examples
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/wojnosystems/go-optional"
-	sorted_set "github.com/wojnosystems/go-sorted-set"
+	"github.com/wojnosystems/go-sorted-set"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_int"
 	"github.com/wojnosystems/okey-dokey/ok_range"
