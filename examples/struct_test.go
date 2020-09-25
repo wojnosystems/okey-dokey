@@ -126,7 +126,7 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: bad.NewSliceMemberReceiver(),
+			expected: bad.NewFields(),
 		},
 		"string missing": {
 			m: userModel{
@@ -140,7 +140,7 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.SliceMember{
+			expected: &bad.Fields{
 				BadFields: map[string][]string{
 					"user.name": {
 						"is required",
@@ -160,7 +160,7 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.SliceMember{
+			expected: &bad.Fields{
 				BadFields: map[string][]string{
 					"user.age": {
 						"is required",
@@ -181,7 +181,7 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.SliceMember{
+			expected: &bad.Fields{
 				BadFields: map[string][]string{
 					"user.age": {
 						"must be greater than or equal to 18",
@@ -202,7 +202,7 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.SliceMember{
+			expected: &bad.Fields{
 				BadFields: map[string][]string{
 					"user.name": {
 						"cannot have more than 10 characters",
@@ -224,7 +224,7 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.SliceMember{
+			expected: &bad.Fields{
 				BadFields: map[string][]string{
 					"user.iceCreamFlavors[0]": {
 						"must be one of the following: chocolate, pistachio, raspberry, vanilla",
@@ -244,7 +244,7 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: &bad.SliceMember{
+			expected: &bad.Fields{
 				BadFields: map[string][]string{
 					"user.pet.name": {
 						"is required",
@@ -259,7 +259,7 @@ func TestModel(t *testing.T) {
 
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
-			actual := bad.NewSliceMemberReceiver()
+			actual := bad.NewFields()
 			userValidations.Validate(&c.m, actual.MemberReceiver("user"))
 			assert.Equal(t, c.expected, actual)
 		})
