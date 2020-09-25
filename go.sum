@@ -32,6 +32,10 @@ github.com/wojnosystems/go-optional v1.3.0 h1:2zHY5/IzjMAvCjFoBVy1Hq4m6LlyGADjtv
 github.com/wojnosystems/go-optional v1.3.0/go.mod h1:Ryu1VdhTzgkURi1WATQ28FcYVLVAnVtIZKo124B0yAE=
 github.com/wojnosystems/go-poor-generics v1.0.1 h1:RV8BhspVK37uEW75AcdHY/8tottzdv35oYVk+ZMvCyo=
 github.com/wojnosystems/go-poor-generics v1.0.1/go.mod h1:l7GJHlUHk3DWoASrPYjmL5QwB0Gx0nnnDX1T9TiPqxg=
+github.com/wojnosystems/go-sorted-set v0.0.0-20200925030634-198f745d3042 h1:VFMCkiz3xOz9UKZOJMku066mSb+dO/7wsVqbx1VA/t4=
+github.com/wojnosystems/go-sorted-set v0.0.0-20200925030634-198f745d3042/go.mod h1:q+tqmuZewraa/mbxEA37MV2qqtep++jTYF6X+taNQqg=
+github.com/wojnosystems/go-sorted-set v1.0.0 h1:RVkn5xYZTYEaHTwWqSCNLq71qmfYC0uTQnMBq5JvvOE=
+github.com/wojnosystems/go-sorted-set v1.0.0/go.mod h1:q+tqmuZewraa/mbxEA37MV2qqtep++jTYF6X+taNQqg=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b h1:QRR6H1YWRnHb4Y/HeNFCTJLFVxaq6wH4YuVdsUOr75U=

@@ -3,6 +3,7 @@ package examples
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/wojnosystems/go-optional"
+	sorted_set "github.com/wojnosystems/go-sorted-set"
 	"okey-dokey/bad"
 	"okey-dokey/ok_int"
 	"okey-dokey/ok_range"
@@ -55,8 +56,8 @@ var modelValidations = modelValidationDefs{
 		},
 		EnsureItems: []ok_string.Definer{
 			&ok_string.OneOf{
-				Only: ok_string.NewSortedSetBuilder("raspberry", "vanilla", "chocolate", "pistachio").
-					Build(),
+				Only: sorted_set.NewString("raspberry", "vanilla", "chocolate", "pistachio").
+					Sort(),
 			},
 		},
 	},

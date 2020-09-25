@@ -3,6 +3,7 @@ package ok_string
 import (
 	"fmt"
 	"github.com/wojnosystems/go-optional"
+	sorted_set "github.com/wojnosystems/go-sorted-set"
 	"okey-dokey/bad"
 	"okey-dokey/ok_action"
 	"sort"
@@ -27,7 +28,7 @@ func defaultFormatOneOf(definition *OneOf, value optional.String) string {
 
 type OneOf struct {
 	Format func(definition *OneOf, value optional.String) string
-	Only   SortedSet
+	Only   sorted_set.String
 }
 
 func (m *OneOf) Validate(value optional.String, violationReceiver bad.MessageReceiver) ok_action.Enum {
