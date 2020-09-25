@@ -1,7 +1,6 @@
 import "okey-dokey/ok_{{.PrimitiveKeyword}}"
 
 type On struct {
-	Id          string
 	Ensure      []Definer
 	EnsureItems []ok_{{.PrimitiveKeyword}}.Definer
 }

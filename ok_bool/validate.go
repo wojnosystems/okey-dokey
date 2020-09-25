@@ -6,10 +6,9 @@ import (
 	"okey-dokey/ok_action"
 )
 
-func Validate(value optional.Bool, fieldName string, definitions []Definer, violations bad.MemberReceiver) {
-	mem := violations.MessageReceiver(fieldName)
+func Validate(value optional.Bool, definitions []Definer, violations bad.MessageReceiver) {
 	for _, definition := range definitions {
-		action := definition.Validate(value, mem)
+		action := definition.Validate(value, violations)
 		if action != ok_action.Continue {
 			return
 		}

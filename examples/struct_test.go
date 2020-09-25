@@ -12,25 +12,63 @@ import (
 	"testing"
 )
 
-type model struct {
-	Id              string
+type dogModel struct {
+	Name optional.String
+	Age  optional.Int
+}
+
+type dogValidationDefs struct {
+	Name ok_string.On
+	Age  ok_int.On
+}
+
+// Validations defined separately so that they can be swapped out on the userModel, depending on the situation
+// This pre-compiles the validations so that they exist only once. Then the validations, which have no state,
+// are run on the userModel
+var dogValidations = dogValidationDefs{
+	Name: ok_string.On{
+		Ensure: []ok_string.Definer{
+			&ok_string.IsRequired{},
+			&ok_string.LengthBetween{
+				Between: ok_range.IntBetween(2, 20),
+			},
+		},
+	},
+	Age: ok_int.On{
+		Ensure: []ok_int.Definer{
+			&ok_int.IsRequired{},
+			&ok_int.LessThan{
+				Value: 25,
+			},
+		},
+	},
+}
+
+// This method should be provided by the library as a reflection implementation
+// It just goes through all of the items and evaluates them, then finally, evaluates the entire struct
+func (v dogValidationDefs) Validate(on *dogModel, receiver bad.MemberReceiver) {
+	ok_string.Validate(on.Name, &v.Name, receiver.MemberReceiver("name"))
+	ok_int.Validate(on.Age, &v.Age, receiver.MemberReceiver("age"))
+}
+
+type userModel struct {
 	Name            optional.String
 	Age             optional.Int
 	IceCreamFlavors []optional.String
+	Pet             dogModel
 }
 
-type modelValidationDefs struct {
+type userValidationDefs struct {
 	Name            ok_string.On
 	Age             ok_int.On
 	IceCreamFlavors ok_slice_string.On
 }
 
-// Validations defined separately so that they can be swapped out on the model, depending on the situation
+// Validations defined separately so that they can be swapped out on the userModel, depending on the situation
 // This pre-compiles the validations so that they exist only once. Then the validations, which have no state,
-// are run on the model
-var modelValidations = modelValidationDefs{
+// are run on the userModel
+var userValidations = userValidationDefs{
 	Name: ok_string.On{
-		Id: "name",
 		Ensure: []ok_string.Definer{
 			&ok_string.IsRequired{},
 			&ok_string.LengthAtMost{
@@ -39,7 +77,6 @@ var modelValidations = modelValidationDefs{
 		},
 	},
 	Age: ok_int.On{
-		Id: "age",
 		Ensure: []ok_int.Definer{
 			&ok_int.IsRequired{},
 			&ok_int.GreaterThanOrEqual{
@@ -48,7 +85,6 @@ var modelValidations = modelValidationDefs{
 		},
 	},
 	IceCreamFlavors: ok_slice_string.On{
-		Id: "iceCreamFlavors",
 		Ensure: []ok_slice_string.Definer{
 			&ok_slice_string.ItemCountBetween{
 				Between: ok_range.IntBetween(2, 10),
@@ -65,97 +101,117 @@ var modelValidations = modelValidationDefs{
 
 // This method should be provided by the library as a reflection implementation
 // It just goes through all of the items and evaluates them, then finally, evaluates the entire struct
-func (v modelValidationDefs) Validate(on *model, structReceiver bad.StructReceiver) {
-	receiver := structReceiver.MemberReceiver(on.Id)
-	ok_string.Validate(on.Name, &v.Name, receiver)
-	ok_int.Validate(on.Age, &v.Age, receiver)
-	ok_slice_string.Validate(on.IceCreamFlavors, &v.IceCreamFlavors, receiver)
+func (v userValidationDefs) Validate(on *userModel, receiver bad.MemberReceiver) {
+	ok_string.Validate(on.Name, &v.Name, receiver.MemberReceiver("name"))
+	ok_int.Validate(on.Age, &v.Age, receiver.MemberReceiver("age"))
+	ok_slice_string.Validate(on.IceCreamFlavors, &v.IceCreamFlavors, receiver.MemberReceiver("iceCreamFlavors"))
+	dogValidations.Validate(&on.Pet, receiver.MemberReceiver("pet"))
 }
 
 func TestModel(t *testing.T) {
 	cases := map[string]struct {
-		m        model
-		expected map[string]bad.SliceMemberReceiver
+		m        userModel
+		expected bad.MemberReceiver
 	}{
 		"ok": {
-			m: model{
-				Id:   "user",
+			m: userModel{
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
+				Pet: dogModel{
+					Name: optional.StringFrom("Zoey"),
+					Age:  optional.IntFrom(5),
+				},
 			},
-			expected: map[string]bad.SliceMemberReceiver{
-				"user": {},
-			},
+			expected: bad.NewSliceMemberReceiver(),
 		},
 		"string missing": {
-			m: model{
-				Id:  "user",
+			m: userModel{
 				Age: optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
+				Pet: dogModel{
+					Name: optional.StringFrom("Zoey"),
+					Age:  optional.IntFrom(5),
+				},
 			},
-			expected: map[string]bad.SliceMemberReceiver{
-				"user": {
-					"name": {"is required"},
+			expected: &bad.SliceMember{
+				BadFields: map[string][]string{
+					"user.name": {
+						"is required",
+					},
 				},
 			},
 		},
 		"age missing": {
-			m: model{
-				Id:   "user",
+			m: userModel{
 				Name: optional.StringFrom("chris"),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
+				Pet: dogModel{
+					Name: optional.StringFrom("Zoey"),
+					Age:  optional.IntFrom(5),
+				},
 			},
-			expected: map[string]bad.SliceMemberReceiver{
-				"user": {
-					"age": {"is required"},
+			expected: &bad.SliceMember{
+				BadFields: map[string][]string{
+					"user.age": {
+						"is required",
+					},
 				},
 			},
 		},
 		"age too young": {
-			m: model{
-				Id:   "user",
+			m: userModel{
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(17),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
+				Pet: dogModel{
+					Name: optional.StringFrom("Zoey"),
+					Age:  optional.IntFrom(5),
+				},
 			},
-			expected: map[string]bad.SliceMemberReceiver{
-				"user": {
-					"age": {"must be greater than or equal to 18"},
+			expected: &bad.SliceMember{
+				BadFields: map[string][]string{
+					"user.age": {
+						"must be greater than or equal to 18",
+					},
 				},
 			},
 		},
 		"name too long": {
-			m: model{
-				Id:   "user",
+			m: userModel{
 				Name: optional.StringFrom("veryLongName"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("vanilla"),
 				},
+				Pet: dogModel{
+					Name: optional.StringFrom("Zoey"),
+					Age:  optional.IntFrom(5),
+				},
 			},
-			expected: map[string]bad.SliceMemberReceiver{
-				"user": {
-					"name": {"cannot have more than 10 characters"},
+			expected: &bad.SliceMember{
+				BadFields: map[string][]string{
+					"user.name": {
+						"cannot have more than 10 characters",
+					},
 				},
 			},
 		},
 		"bad ice cream": {
-			m: model{
-				Id:   "user",
+			m: userModel{
 				Name: optional.StringFrom("chris"),
 				Age:  optional.IntFrom(30),
 				IceCreamFlavors: []optional.String{
@@ -163,11 +219,39 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("chocolate"),
 					optional.StringFrom("orange"),
 				},
+				Pet: dogModel{
+					Name: optional.StringFrom("Zoey"),
+					Age:  optional.IntFrom(5),
+				},
 			},
-			expected: map[string]bad.SliceMemberReceiver{
-				"user": {
-					"iceCreamFlavors[0]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
-					"iceCreamFlavors[2]": {"must be one of the following: chocolate, pistachio, raspberry, vanilla"},
+			expected: &bad.SliceMember{
+				BadFields: map[string][]string{
+					"user.iceCreamFlavors[0]": {
+						"must be one of the following: chocolate, pistachio, raspberry, vanilla",
+					},
+					"user.iceCreamFlavors[2]": {
+						"must be one of the following: chocolate, pistachio, raspberry, vanilla",
+					},
+				},
+			},
+		},
+		"missing pet": {
+			m: userModel{
+				Name: optional.StringFrom("chris"),
+				Age:  optional.IntFrom(30),
+				IceCreamFlavors: []optional.String{
+					optional.StringFrom("chocolate"),
+					optional.StringFrom("vanilla"),
+				},
+			},
+			expected: &bad.SliceMember{
+				BadFields: map[string][]string{
+					"user.pet.name": {
+						"is required",
+					},
+					"user.pet.age": {
+						"is required",
+					},
 				},
 			},
 		},
@@ -175,9 +259,9 @@ func TestModel(t *testing.T) {
 
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
-			actual := make(bad.SliceStructReceiver)
-			modelValidations.Validate(&c.m, &actual)
-			assert.Equal(t, bad.SliceStructReceiver(c.expected), actual)
+			actual := bad.NewSliceMemberReceiver()
+			userValidations.Validate(&c.m, actual.MemberReceiver("user"))
+			assert.Equal(t, c.expected, actual)
 		})
 	}
 }

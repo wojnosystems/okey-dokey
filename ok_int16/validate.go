@@ -6,10 +6,9 @@ import (
 	"okey-dokey/ok_action"
 )
 
-func Validate(value optional.Int16, on *On, violations bad.MemberReceiver) {
-	mem := violations.MessageReceiver(on.Id)
+func Validate(value optional.Int16, on *On, violations bad.MessageReceiver) {
 	for _, definition := range on.Ensure {
-		action := definition.Validate(value, mem)
+		action := definition.Validate(value, violations)
 		if action != ok_action.Continue {
 			return
 		}
