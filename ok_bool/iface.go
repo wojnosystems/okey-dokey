@@ -7,5 +7,5 @@ import (
 )
 
 type Definer interface {
-	Validate(value optional.Bool, violationReceiver bad.MessageReceiver) ok_action.Enum
+	Validate(value optional.Bool, violationReceiver bad.Emitter) ok_action.Enum
 }

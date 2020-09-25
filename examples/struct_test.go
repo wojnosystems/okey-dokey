@@ -46,9 +46,9 @@ var dogValidations = dogValidationDefs{
 
 // This method should be provided by the library as a reflection implementation
 // It just goes through all of the items and evaluates them, then finally, evaluates the entire struct
-func (v dogValidationDefs) Validate(on *dogModel, receiver bad.MemberReceiver) {
-	ok_string.Validate(on.Name, &v.Name, receiver.MemberReceiver("name"))
-	ok_int.Validate(on.Age, &v.Age, receiver.MemberReceiver("age"))
+func (v dogValidationDefs) Validate(on *dogModel, receiver bad.MemberEmitter) {
+	ok_string.Validate(on.Name, &v.Name, receiver.Into("name"))
+	ok_int.Validate(on.Age, &v.Age, receiver.Into("age"))
 }
 
 type userModel struct {
@@ -101,17 +101,17 @@ var userValidations = userValidationDefs{
 
 // This method should be provided by the library as a reflection implementation
 // It just goes through all of the items and evaluates them, then finally, evaluates the entire struct
-func (v userValidationDefs) Validate(on *userModel, receiver bad.MemberReceiver) {
-	ok_string.Validate(on.Name, &v.Name, receiver.MemberReceiver("name"))
-	ok_int.Validate(on.Age, &v.Age, receiver.MemberReceiver("age"))
-	ok_slice_string.Validate(on.IceCreamFlavors, &v.IceCreamFlavors, receiver.MemberReceiver("iceCreamFlavors"))
-	dogValidations.Validate(&on.Pet, receiver.MemberReceiver("pet"))
+func (v userValidationDefs) Validate(on *userModel, receiver bad.MemberEmitter) {
+	ok_string.Validate(on.Name, &v.Name, receiver.Into("name"))
+	ok_int.Validate(on.Age, &v.Age, receiver.Into("age"))
+	ok_slice_string.Validate(on.IceCreamFlavors, &v.IceCreamFlavors, receiver.Into("iceCreamFlavors"))
+	dogValidations.Validate(&on.Pet, receiver.Into("pet"))
 }
 
 func TestModel(t *testing.T) {
 	cases := map[string]struct {
 		m        userModel
-		expected bad.MemberReceiver
+		expected bad.MemberEmitter
 	}{
 		"ok": {
 			m: userModel{
@@ -260,7 +260,7 @@ func TestModel(t *testing.T) {
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
 			actual := bad.NewFields()
-			userValidations.Validate(&c.m, actual.MemberReceiver("user"))
+			userValidations.Validate(&c.m, actual.Into("user"))
 			assert.Equal(t, c.expected, actual)
 		})
 	}

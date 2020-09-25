@@ -16,7 +16,7 @@ type NotEqual struct {
 	Value  uint32
 }
 
-func (m *NotEqual) Validate(value optional.Uint32, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *NotEqual) Validate(value optional.Uint32, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultNotEqualFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -25,7 +25,7 @@ func (m *NotEqual) Validate(value optional.Uint32, violationReceiver bad.Message
 		return ok_action.Continue
 	}
 	if value.Value() == m.Value {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

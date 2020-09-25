@@ -17,7 +17,7 @@ type LengthBetween struct {
 	Between ok_range.Int
 }
 
-func (m *LengthBetween) Validate(value optional.String, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *LengthBetween) Validate(value optional.String, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultLengthBetweenFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -26,7 +26,7 @@ func (m *LengthBetween) Validate(value optional.String, violationReceiver bad.Me
 		return ok_action.Continue
 	}
 	if len(value.Value()) < m.Between.Start() || m.Between.End() < len(value.Value()) {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

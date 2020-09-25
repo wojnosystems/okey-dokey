@@ -14,7 +14,7 @@ type True struct {
 	Format func(definition *True, value optional.Bool) string
 }
 
-func (m *True) Validate(value optional.Bool, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *True) Validate(value optional.Bool, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultTrueFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -23,7 +23,7 @@ func (m *True) Validate(value optional.Bool, violationReceiver bad.MessageReceiv
 		return ok_action.Continue
 	}
 	if !value.Value() {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

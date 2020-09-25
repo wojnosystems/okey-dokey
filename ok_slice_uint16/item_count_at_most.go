@@ -16,7 +16,7 @@ type ItemCountAtMost struct {
 	AtMost int
 }
 
-func (m *ItemCountAtMost) Validate(value []optional.Uint16, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *ItemCountAtMost) Validate(value []optional.Uint16, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultItemCountAtMostFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -26,7 +26,7 @@ func (m *ItemCountAtMost) Validate(value []optional.Uint16, violationReceiver ba
 		length = len(value)
 	}
 	if length > m.AtMost {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

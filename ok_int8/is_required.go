@@ -14,13 +14,13 @@ type IsRequired struct {
 	Format func(definition *IsRequired, value optional.Int8) string
 }
 
-func (m *IsRequired) Validate(value optional.Int8, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *IsRequired) Validate(value optional.Int8, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultIsRequiredFormat
 	if m.Format != nil {
 		formatter = m.Format
 	}
 	if !value.IsSet() {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

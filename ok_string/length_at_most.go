@@ -16,7 +16,7 @@ type LengthAtMost struct {
 	Length int
 }
 
-func (m *LengthAtMost) Validate(value optional.String, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *LengthAtMost) Validate(value optional.String, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultLengthAtMostFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -25,7 +25,7 @@ func (m *LengthAtMost) Validate(value optional.String, violationReceiver bad.Mes
 		return ok_action.Continue
 	}
 	if len(value.Value()) > m.Length {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

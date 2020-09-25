@@ -14,7 +14,7 @@ type IsRequired struct {
 	Format func(definition *IsRequired, value optional.Bool) string
 }
 
-func (m *IsRequired) Validate(value optional.Bool, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *IsRequired) Validate(value optional.Bool, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultIsRequiredFormat
 	if m.Format != nil {
 		formatter = m.Format

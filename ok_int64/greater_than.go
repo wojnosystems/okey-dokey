@@ -16,7 +16,7 @@ type GreaterThan struct {
 	Value  int64
 }
 
-func (m *GreaterThan) Validate(value optional.Int64, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *GreaterThan) Validate(value optional.Int64, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultGreaterThanFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -25,7 +25,7 @@ func (m *GreaterThan) Validate(value optional.Int64, violationReceiver bad.Messa
 		return ok_action.Continue
 	}
 	if value.Value() <= m.Value {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

@@ -16,7 +16,7 @@ type LessThanOrEqual struct {
 	Value  int
 }
 
-func (m *LessThanOrEqual) Validate(value optional.Int, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *LessThanOrEqual) Validate(value optional.Int, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultLessThanOrEqualFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -25,7 +25,7 @@ func (m *LessThanOrEqual) Validate(value optional.Int, violationReceiver bad.Mes
 		return ok_action.Continue
 	}
 	if value.Value() > m.Value {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

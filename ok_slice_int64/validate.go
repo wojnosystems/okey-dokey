@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func Validate(values []optional.Int64, on *On, violations bad.MemberReceiver) {
+func Validate(values []optional.Int64, on *On, violations bad.MemberEmitter) {
 	for _, definition := range on.Ensure {
 		action := definition.Validate(values, violations)
 		if action != ok_action.Continue {
@@ -15,7 +15,7 @@ func Validate(values []optional.Int64, on *On, violations bad.MemberReceiver) {
 		}
 	}
 	for i, value := range values {
-		mem := violations.MemberReceiver("[" + strconv.FormatInt(int64(i), 10) + "]")
+		mem := violations.Into("[" + strconv.FormatInt(int64(i), 10) + "]")
 		for _, definition := range on.EnsureItems {
 			action := definition.Validate(value, mem)
 			if action != ok_action.Continue {

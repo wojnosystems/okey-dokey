@@ -14,7 +14,7 @@ type GreaterThan struct {
 	Value  {{.PrimitiveKeyword}}
 }
 
-func (m *GreaterThan) Validate(value optional.{{.OptionalType}}, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *GreaterThan) Validate(value optional.{{.OptionalType}}, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultGreaterThanFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -23,7 +23,7 @@ func (m *GreaterThan) Validate(value optional.{{.OptionalType}}, violationReceiv
 		return ok_action.Continue
 	}
 	if value.Value() <= m.Value {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

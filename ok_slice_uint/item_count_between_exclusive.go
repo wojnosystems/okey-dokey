@@ -17,7 +17,7 @@ type ItemCountBetweenExclusive struct {
 	Between ok_range.IntExclusive
 }
 
-func (m *ItemCountBetweenExclusive) Validate(value []optional.Uint, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *ItemCountBetweenExclusive) Validate(value []optional.Uint, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultItemCountBetweenExclusiveFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -27,7 +27,7 @@ func (m *ItemCountBetweenExclusive) Validate(value []optional.Uint, violationRec
 		length = len(value)
 	}
 	if length <= m.Between.Start() || m.Between.End() <= length {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

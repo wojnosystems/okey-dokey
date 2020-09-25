@@ -16,7 +16,7 @@ type ItemCountAtLeast struct {
 	AtLeast int
 }
 
-func (m *ItemCountAtLeast) Validate(value []optional.Int, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *ItemCountAtLeast) Validate(value []optional.Int, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultItemCountAtLeastFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -26,7 +26,7 @@ func (m *ItemCountAtLeast) Validate(value []optional.Int, violationReceiver bad.
 		length = len(value)
 	}
 	if length < m.AtLeast {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

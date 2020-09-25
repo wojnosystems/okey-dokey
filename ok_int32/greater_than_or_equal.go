@@ -16,7 +16,7 @@ type GreaterThanOrEqual struct {
 	Value  int32
 }
 
-func (m *GreaterThanOrEqual) Validate(value optional.Int32, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *GreaterThanOrEqual) Validate(value optional.Int32, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultGreaterThanOrEqualFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -25,7 +25,7 @@ func (m *GreaterThanOrEqual) Validate(value optional.Int32, violationReceiver ba
 		return ok_action.Continue
 	}
 	if value.Value() < m.Value {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

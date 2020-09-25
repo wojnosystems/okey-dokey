@@ -31,7 +31,7 @@ type OneOf struct {
 	Only   sorted_set.String
 }
 
-func (m *OneOf) Validate(value optional.String, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *OneOf) Validate(value optional.String, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultFormatOneOf
 	if m.Format != nil {
 		formatter = m.Format
@@ -41,7 +41,7 @@ func (m *OneOf) Validate(value optional.String, violationReceiver bad.MessageRec
 	}
 	searchIndex := sort.SearchStrings(m.Only, value.Value())
 	if searchIndex == len(m.Only) || m.Only[searchIndex] != value.Value() {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }

@@ -16,7 +16,7 @@ type Equal struct {
 	Value  uint8
 }
 
-func (m *Equal) Validate(value optional.Uint8, violationReceiver bad.MessageReceiver) ok_action.Enum {
+func (m *Equal) Validate(value optional.Uint8, violationReceiver bad.Emitter) ok_action.Enum {
 	formatter := defaultEqualFormat
 	if m.Format != nil {
 		formatter = m.Format
@@ -25,7 +25,7 @@ func (m *Equal) Validate(value optional.Uint8, violationReceiver bad.MessageRece
 		return ok_action.Continue
 	}
 	if value.Value() != m.Value {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }
