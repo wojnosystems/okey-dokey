@@ -4,28 +4,29 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/wojnosystems/go-optional"
+	sorted_set "github.com/wojnosystems/go-sorted-set"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"testing"
 )
 
 func TestOneOf_Validate(t *testing.T) {
 	cases := map[string]struct {
-		oneOf    SortedSet
+		oneOf    sorted_set.String
 		input    optional.String
 		expected string
 	}{
 		"ok": {
-			oneOf:    NewSortedSetBuilder("apple", "durian", "carrot", "banana").Build(),
+			oneOf:    sorted_set.NewString("apple", "durian", "carrot", "banana").Sort(),
 			input:    optional.StringFrom("carrot"),
 			expected: "",
 		},
 		"missing": {
-			oneOf:    NewSortedSetBuilder("apple", "durian", "carrot", "banana").Build(),
+			oneOf:    sorted_set.NewString("apple", "durian", "carrot", "banana").Sort(),
 			input:    optional.StringFrom("invalid"),
 			expected: "must be one of the following: apple, banana, carrot, durian",
 		},
 		"missing long list": {
-			oneOf: NewSortedSetBuilder(
+			oneOf: sorted_set.NewString(
 				"apple",
 				"banana",
 				"carrot",
@@ -36,12 +37,12 @@ func TestOneOf_Validate(t *testing.T) {
 				"honeydew",
 				"ifood",
 				"jackfruit",
-				"kiwi").Build(),
+				"kiwi").Sort(),
 			input:    optional.StringFrom("invalid"),
 			expected: "must be one of the following: apple, banana, carrot, durian, eggplant, fig, grape, honeydew, ifood, jackfruit, ...",
 		},
 		"empty": {
-			oneOf: SortedSet{},
+			oneOf: sorted_set.NewString().Sort(),
 		},
 	}
 

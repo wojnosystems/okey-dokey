@@ -4,6 +4,12 @@ A validation library for GoLang structs and primitives. You define your validati
 
 Uses interfaces for the emitters.
 
+# Generating everything
+
+```shell script
+go run ./cmd/gen/generate.go -- --templatePath=templates --outputRootPath=.
+```
+
 # Todo
 
  * Floats!

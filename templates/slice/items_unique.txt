@@ -1,0 +1,42 @@
+import (
+	"fmt"
+	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/okey-dokey/bad"
+	"github.com/wojnosystems/okey-dokey/ok_action"
+)
+
+func defaultItemsUniqueFormat(definition *ItemsUnique, value []optional.{{.OptionalType}}, duplicateIndexes []int) string {
+    sb := strings.Builder{}
+    sb.WriteString("must contain unique elements, but these items were duplicated: ")
+    for i, d := range duplicateIndexes {
+        sb.WriteString(fmt.Sprintf("%v", value[d]))
+        if i < len(duplicateIndexes) {
+            sb.WriteString(", ")
+        }
+    }
+    return sb.String()
+}
+
+type ItemsUnique struct {
+    Format  func(definition *ItemsUnique, value []optional.{{.OptionalType}}, duplicateIndexes []int) string
+}
+
+func (m *ItemsUnique) Validate(value []optional.{{.OptionalType}}, violationReceiver bad.Emitter) ok_action.Enum {
+    formatter := defaultItemsUniqueFormat
+    if m.Format != nil {
+        formatter = m.Format
+    }
+    duplicates := make([]int, 0, 10)
+    items := make(map[{{.OptionalType}}]bool)
+    for i, v := range value {
+        if _, ok := items[v]; ok {
+            duplicates = append(duplicates, i)
+        } else {
+            items[v] = true
+        }
+    }
+    if len(duplicates) != 0 {
+        violationReceiver.Emit(formatter(m, value, duplicates))
+    }
+    return ok_action.Continue
+}
