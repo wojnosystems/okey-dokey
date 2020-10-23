@@ -1,16 +1,17 @@
 import (
-	"fmt"
-	"github.com/wojnosystems/go-optional"
-	"github.com/wojnosystems/okey-dokey/bad"
-	"github.com/wojnosystems/okey-dokey/ok_action"
+    "fmt"
+    "github.com/wojnosystems/go-optional"
+    "github.com/wojnosystems/okey-dokey/bad"
+    "github.com/wojnosystems/okey-dokey/ok_action"
+    "strings"
 )
 
 func defaultItemsUniqueFormat(definition *ItemsUnique, value []optional.{{.OptionalType}}, duplicateIndexes []int) string {
     sb := strings.Builder{}
-    sb.WriteString("must contain unique elements, but these items were duplicated: ")
+    sb.WriteString("must have only unique elements, but had duplicates of ")
     for i, d := range duplicateIndexes {
-        sb.WriteString(fmt.Sprintf("%v", value[d]))
-        if i < len(duplicateIndexes) {
+        sb.WriteString(fmt.Sprintf("%v", value[d].Value()))
+        if i < len(duplicateIndexes) - 1 {
             sb.WriteString(", ")
         }
     }
@@ -27,12 +28,12 @@ func (m *ItemsUnique) Validate(value []optional.{{.OptionalType}}, violationRece
         formatter = m.Format
     }
     duplicates := make([]int, 0, 10)
-    items := make(map[{{.OptionalType}}]bool)
+    items := make(map[{{.PrimitiveKeyword}}]bool)
     for i, v := range value {
-        if _, ok := items[v]; ok {
+        if _, ok := items[v.Value()]; ok {
             duplicates = append(duplicates, i)
         } else {
-            items[v] = true
+            items[v.Value()] = true
         }
     }
     if len(duplicates) != 0 {

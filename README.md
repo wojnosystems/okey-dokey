@@ -7,7 +7,7 @@ Uses interfaces for the emitters.
 # Generating everything
 
 ```shell script
-go run ./cmd/gen/generate.go -- --templatePath=templates --outputRootPath=.
+go run ./cmd/gen/generate.go --templatePath templates --outputRootPath .
 ```
 
 # Todo
