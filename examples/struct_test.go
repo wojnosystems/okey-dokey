@@ -111,7 +111,7 @@ func (v userValidationDefs) Validate(on *userModel, receiver bad.MemberEmitter) 
 func TestModel(t *testing.T) {
 	cases := map[string]struct {
 		m        userModel
-		expected bad.MemberEmitter
+		expected map[string][]string
 	}{
 		"ok": {
 			m: userModel{
@@ -126,7 +126,6 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: bad.NewFields(),
 		},
 		"string missing": {
 			m: userModel{
@@ -140,11 +139,9 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.Fields{
-				BadFields: map[string][]string{
-					"user.name": {
-						"is required",
-					},
+			expected: map[string][]string{
+				"user.name": {
+					"is required",
 				},
 			},
 		},
@@ -160,11 +157,9 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.Fields{
-				BadFields: map[string][]string{
-					"user.age": {
-						"is required",
-					},
+			expected: map[string][]string{
+				"user.age": {
+					"is required",
 				},
 			},
 		},
@@ -181,11 +176,9 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.Fields{
-				BadFields: map[string][]string{
-					"user.age": {
-						"must be greater than or equal to 18",
-					},
+			expected: map[string][]string{
+				"user.age": {
+					"must be greater than or equal to 18",
 				},
 			},
 		},
@@ -202,11 +195,9 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.Fields{
-				BadFields: map[string][]string{
-					"user.name": {
-						"cannot have more than 10 characters",
-					},
+			expected: map[string][]string{
+				"user.name": {
+					"cannot have more than 10 characters",
 				},
 			},
 		},
@@ -224,14 +215,12 @@ func TestModel(t *testing.T) {
 					Age:  optional.IntFrom(5),
 				},
 			},
-			expected: &bad.Fields{
-				BadFields: map[string][]string{
-					"user.iceCreamFlavors[0]": {
-						"must be one of the following: chocolate, pistachio, raspberry, vanilla",
-					},
-					"user.iceCreamFlavors[2]": {
-						"must be one of the following: chocolate, pistachio, raspberry, vanilla",
-					},
+			expected: map[string][]string{
+				"user.iceCreamFlavors[0]": {
+					"must be one of the following: chocolate, pistachio, raspberry, vanilla",
+				},
+				"user.iceCreamFlavors[2]": {
+					"must be one of the following: chocolate, pistachio, raspberry, vanilla",
 				},
 			},
 		},
@@ -244,14 +233,12 @@ func TestModel(t *testing.T) {
 					optional.StringFrom("vanilla"),
 				},
 			},
-			expected: &bad.Fields{
-				BadFields: map[string][]string{
-					"user.pet.name": {
-						"is required",
-					},
-					"user.pet.age": {
-						"is required",
-					},
+			expected: map[string][]string{
+				"user.pet.name": {
+					"is required",
+				},
+				"user.pet.age": {
+					"is required",
 				},
 			},
 		},
@@ -259,9 +246,22 @@ func TestModel(t *testing.T) {
 
 	for caseName, c := range cases {
 		t.Run(caseName, func(t *testing.T) {
-			actual := bad.NewFields()
+			actual := bad.NewCollection()
 			userValidations.Validate(&c.m, actual.Into("user"))
-			assert.Equal(t, c.expected, actual)
+			if c.expected == nil || len(c.expected) == 0 {
+				assert.True(t, actual.IsEmpty())
+			} else {
+				assert.True(t, actual.HasAny())
+				assert.Equal(t, c.expected, collectorToMap(actual))
+			}
 		})
 	}
+}
+
+func collectorToMap(c bad.Collector) (out map[string][]string) {
+	out = make(map[string][]string)
+	for _, path := range c.Paths() {
+		out[path] = c.MessagesAtPath(path)
+	}
+	return
 }

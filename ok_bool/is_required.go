@@ -20,7 +20,7 @@ func (m *IsRequired) Validate(value optional.Bool, violationReceiver bad.Emitter
 		formatter = m.Format
 	}
 	if !value.IsSet() {
-		violationReceiver.ReceiveMessage(formatter(m, value))
+		violationReceiver.Emit(formatter(m, value))
 	}
 	return ok_action.Continue
 }
