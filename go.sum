@@ -26,14 +26,8 @@ github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/urfave/cli/v2 v2.2.0 h1:JTTnM6wKzdA0Jqodd966MVj4vWbbquZykeX1sKbe2C4=
 github.com/urfave/cli/v2 v2.2.0/go.mod h1:SE9GqnLQmjVa0iPEY0f1w3ygNIYcIJ0OKPMoW2caLfQ=
-github.com/wojnosystems/go-optional v1.2.0 h1:fvHqjtYhLp/WumPV0ShoBuCCCPcvfH9UmAvqHP3Snw8=
-github.com/wojnosystems/go-optional v1.2.0/go.mod h1:Ryu1VdhTzgkURi1WATQ28FcYVLVAnVtIZKo124B0yAE=
-github.com/wojnosystems/go-optional v1.3.0 h1:2zHY5/IzjMAvCjFoBVy1Hq4m6LlyGADjtvIpOTUPG10=
-github.com/wojnosystems/go-optional v1.3.0/go.mod h1:Ryu1VdhTzgkURi1WATQ28FcYVLVAnVtIZKo124B0yAE=
-github.com/wojnosystems/go-poor-generics v1.0.1 h1:RV8BhspVK37uEW75AcdHY/8tottzdv35oYVk+ZMvCyo=
-github.com/wojnosystems/go-poor-generics v1.0.1/go.mod h1:l7GJHlUHk3DWoASrPYjmL5QwB0Gx0nnnDX1T9TiPqxg=
-github.com/wojnosystems/go-sorted-set v0.0.0-20200925030634-198f745d3042 h1:VFMCkiz3xOz9UKZOJMku066mSb+dO/7wsVqbx1VA/t4=
-github.com/wojnosystems/go-sorted-set v0.0.0-20200925030634-198f745d3042/go.mod h1:q+tqmuZewraa/mbxEA37MV2qqtep++jTYF6X+taNQqg=
+github.com/wojnosystems/go-optional/v2 v2.0.1 h1:52evTNKjcV96TolEr3npt4AT+mUDwscdfZrqzjC5a/U=
+github.com/wojnosystems/go-optional/v2 v2.0.1/go.mod h1:BLnm9o/Ha9s38Y0vkejR1d82R/Ls1059PX0Ycznhj3s=
 github.com/wojnosystems/go-sorted-set v1.0.0 h1:RVkn5xYZTYEaHTwWqSCNLq71qmfYC0uTQnMBq5JvvOE=
 github.com/wojnosystems/go-sorted-set v1.0.0/go.mod h1:q+tqmuZewraa/mbxEA37MV2qqtep++jTYF6X+taNQqg=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=

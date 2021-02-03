@@ -3,7 +3,7 @@ package ok_string
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	sorted_set "github.com/wojnosystems/go-sorted-set"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"testing"

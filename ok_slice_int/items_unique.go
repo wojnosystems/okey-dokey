@@ -2,7 +2,7 @@ package ok_slice_int
 
 import (
 	"fmt"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
 	"strings"
@@ -12,7 +12,11 @@ func defaultItemsUniqueFormat(definition *ItemsUnique, value []optional.Int, dup
 	sb := strings.Builder{}
 	sb.WriteString("must have only unique elements, but had duplicates of ")
 	for i, d := range duplicateIndexes {
-		sb.WriteString(fmt.Sprintf("%v", value[d].Value()))
+		value[d].IfSetElse(func(actual int) {
+			sb.WriteString(fmt.Sprintf("%v", actual))
+		}, func() {
+			sb.WriteString("<unset>")
+		})
 		if i < len(duplicateIndexes)-1 {
 			sb.WriteString(", ")
 		}
@@ -29,14 +33,22 @@ func (m *ItemsUnique) Validate(value []optional.Int, violationReceiver bad.Emitt
 	if m.Format != nil {
 		formatter = m.Format
 	}
+	unsetCount := 0
 	duplicates := make([]int, 0, 10)
 	items := make(map[int]bool)
 	for i, v := range value {
-		if _, ok := items[v.Value()]; ok {
-			duplicates = append(duplicates, i)
-		} else {
-			items[v.Value()] = true
-		}
+		v.IfSetElse(func(actual int) {
+			if _, ok := items[actual]; ok {
+				duplicates = append(duplicates, i)
+			} else {
+				items[actual] = true
+			}
+		}, func() {
+			unsetCount++
+			if unsetCount > 1 {
+				duplicates = append(duplicates, i)
+			}
+		})
 	}
 	if len(duplicates) != 0 {
 		violationReceiver.Emit(formatter(m, value, duplicates))

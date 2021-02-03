@@ -1,7 +1,7 @@
 package ok_bool
 
 import (
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
 )
@@ -19,11 +19,10 @@ func (m *True) Validate(value optional.Bool, violationReceiver bad.Emitter) ok_a
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if !value.IsSet() {
-		return ok_action.Continue
-	}
-	if !value.Value() {
-		violationReceiver.Emit(formatter(m, value))
-	}
+	value.IfSet(func(actual bool) {
+		if !actual {
+			violationReceiver.Emit(formatter(m, value))
+		}
+	})
 	return ok_action.Continue
 }

@@ -2,7 +2,7 @@ package ok_slice_uint8
 
 import (
 	"fmt"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
 )

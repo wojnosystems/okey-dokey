@@ -3,7 +3,7 @@ package ok_bool
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"testing"
 )

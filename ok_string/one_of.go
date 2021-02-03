@@ -2,7 +2,7 @@ package ok_string
 
 import (
 	"fmt"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	sorted_set "github.com/wojnosystems/go-sorted-set"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
@@ -14,7 +14,7 @@ const (
 	oneOfMaxItemsToList = 10
 )
 
-func defaultFormatOneOf(definition *OneOf, value optional.String) string {
+func defaultFormatOneOf(definition *OneOf, value string) string {
 	itemsToList := oneOfMaxItemsToList
 	if len(definition.Only) < itemsToList {
 		itemsToList = len(definition.Only)
@@ -27,7 +27,7 @@ func defaultFormatOneOf(definition *OneOf, value optional.String) string {
 }
 
 type OneOf struct {
-	Format func(definition *OneOf, value optional.String) string
+	Format func(definition *OneOf, value string) string
 	Only   sorted_set.String
 }
 
@@ -36,12 +36,11 @@ func (m *OneOf) Validate(value optional.String, violationReceiver bad.Emitter) o
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if !value.IsSet() {
-		return ok_action.Continue
-	}
-	searchIndex := sort.SearchStrings(m.Only, value.Value())
-	if searchIndex == len(m.Only) || m.Only[searchIndex] != value.Value() {
-		violationReceiver.Emit(formatter(m, value))
-	}
+	value.IfSet(func(actual string) {
+		searchIndex := sort.SearchStrings(m.Only, actual)
+		if searchIndex == len(m.Only) || m.Only[searchIndex] != actual {
+			violationReceiver.Emit(formatter(m, actual))
+		}
+	})
 	return ok_action.Continue
 }

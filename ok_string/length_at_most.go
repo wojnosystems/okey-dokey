@@ -2,7 +2,7 @@ package ok_string
 
 import (
 	"fmt"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
 )
@@ -21,11 +21,10 @@ func (m *LengthAtMost) Validate(value optional.String, violationReceiver bad.Emi
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if !value.IsSet() {
-		return ok_action.Continue
-	}
-	if len(value.Value()) > m.Length {
-		violationReceiver.Emit(formatter(m, value))
-	}
+	value.IfSet(func(actual string) {
+		if len(actual) > m.Length {
+			violationReceiver.Emit(formatter(m, value))
+		}
+	})
 	return ok_action.Continue
 }

@@ -1,7 +1,7 @@
 package ok_string
 
 import (
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
 	"net/url"
@@ -20,12 +20,11 @@ func (m *IsURL) Validate(value optional.String, violationReceiver bad.Emitter) o
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if !value.IsSet() {
-		return ok_action.Continue
-	}
-	_, err := url.Parse(value.Value())
-	if err != nil {
-		violationReceiver.Emit(formatter(m, value))
-	}
+	value.IfSet(func(actual string) {
+		_, err := url.Parse(actual)
+		if err != nil {
+			violationReceiver.Emit(formatter(m, value))
+		}
+	})
 	return ok_action.Continue
 }

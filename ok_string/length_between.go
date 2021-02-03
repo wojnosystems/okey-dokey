@@ -2,18 +2,18 @@ package ok_string
 
 import (
 	"fmt"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_action"
 	"github.com/wojnosystems/okey-dokey/ok_range"
 )
 
-func defaultLengthBetweenFormat(definition *LengthBetween, value optional.String) string {
-	return fmt.Sprintf("must have at least %d and at most %d characters, but had %d", definition.Between.Start(), definition.Between.End(), len(value.Value()))
+func defaultLengthBetweenFormat(definition *LengthBetween, value string) string {
+	return fmt.Sprintf("must have at least %d and at most %d characters, but had %d", definition.Between.Start(), definition.Between.End(), len(value))
 }
 
 type LengthBetween struct {
-	Format  func(definition *LengthBetween, value optional.String) string
+	Format  func(definition *LengthBetween, value string) string
 	Between ok_range.Int
 }
 
@@ -22,11 +22,10 @@ func (m *LengthBetween) Validate(value optional.String, violationReceiver bad.Em
 	if m.Format != nil {
 		formatter = m.Format
 	}
-	if !value.IsSet() {
-		return ok_action.Continue
-	}
-	if len(value.Value()) < m.Between.Start() || m.Between.End() < len(value.Value()) {
-		violationReceiver.Emit(formatter(m, value))
-	}
+	value.IfSet(func(actual string) {
+		if len(actual) < m.Between.Start() || m.Between.End() < len(actual) {
+			violationReceiver.Emit(formatter(m, actual))
+		}
+	})
 	return ok_action.Continue
 }

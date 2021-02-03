@@ -2,7 +2,7 @@ package examples
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/wojnosystems/go-optional"
+	"github.com/wojnosystems/go-optional/v2"
 	"github.com/wojnosystems/go-sorted-set"
 	"github.com/wojnosystems/okey-dokey/bad"
 	"github.com/wojnosystems/okey-dokey/ok_int"
